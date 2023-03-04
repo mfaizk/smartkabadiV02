@@ -5,7 +5,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SignUp from './src/screens/SignUpScreen';
 import SignIn from './src/screens/SignInScreen';
-
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -20,12 +19,24 @@ const App = () => {
         <Stack.Screen
           name="signin"
           component={SignIn}
-          options={{headerShown: false}}
+          options={{
+            headerTitle: 'User Signin',
+            headerShadowVisible: false,
+            headerTintColor: 'gray',
+            headerTitleAlign: 'center',
+            headerBackVisible: false,
+          }}
         />
         <Stack.Screen
           name="signup"
           component={SignUp}
-          options={{headerShown: false}}
+          options={{
+            headerTitle: 'User Signup',
+            headerShadowVisible: false,
+            headerTintColor: 'gray',
+            headerTitleAlign: 'center',
+            headerBackVisible: false,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
