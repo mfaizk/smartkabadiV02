@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -29,10 +29,13 @@ const WelcomeScreen = () => {
           </Text>
         </View>
         <View>
-          <TouchableOpacity style={styles.loginButton}>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => navigation.navigate('signin' as never)}>
             <Text style={[styles.defaultText]}>Sign in with Email</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => navigation.navigate('signup' as never)}
             style={[
               styles.loginButton,
               {backgroundColor: currentTheme.primary},
@@ -83,7 +86,7 @@ const styles = StyleSheet.create({
   loginButton: {
     minHeight: 40,
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: currentTheme.borderColor,
     minWidth: 300,
     display: 'flex',
     justifyContent: 'center',

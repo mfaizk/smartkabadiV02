@@ -19,16 +19,7 @@ const App = () => {
         <Stack.Screen
           name="signin"
           component={SignIn}
-          options={{
-            headerTitle: 'User Signin',
-            headerShadowVisible: false,
-            headerTintColor: 'gray',
-            headerTitleAlign: 'center',
-            headerBackVisible: false,
-            headerStyle: {
-              backgroundColor: '#f2f2f2',
-            },
-          }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="signup"
