@@ -25,6 +25,9 @@ const App = () => {
             headerTintColor: 'gray',
             headerTitleAlign: 'center',
             headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: '#f2f2f2',
+            },
           }}
         />
         <Stack.Screen
@@ -36,6 +39,9 @@ const App = () => {
             headerTintColor: 'gray',
             headerTitleAlign: 'center',
             headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: '#f2f2f2',
+            },
           }}
         />
       </Stack.Navigator>
