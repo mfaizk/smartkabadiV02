@@ -10,8 +10,13 @@ import {
   StyleSheet,
   Dimensions,
   StatusBar,
+  // ActivityIndicator,
 } from 'react-native';
 import {themeDataDark1, themeDataLight1} from '../configs/themeData';
+import {signInWithEmailAndPassword} from '../utils/firebaseHandler';
+import {useSelector} from 'react-redux';
+import {RootState} from '../redux/store/store';
+import LoadingScreen from './LoadingScreen';
 
 const currentTheme = themeDataDark1 || themeDataLight1;
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
@@ -20,10 +25,18 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const nav = useNavigation();
+  const loadingState = useSelector((state: RootState) => state.loading);
   const submitHandler = (): void => {
-    console.log(email);
-    console.log(password);
+    if (email && password) {
+      // setClick(true);
+      signInWithEmailAndPassword(email, password, nav);
+      setEmail('');
+      setPassword('');
+    }
   };
+  if (loadingState.loading) {
+    return <LoadingScreen indicatorColor={currentTheme.primary} />;
+  }
 
   return (
     <SafeAreaView>
@@ -43,12 +56,14 @@ const SignIn = () => {
                 style={styles.input}
                 value={email.trim()}
                 onChangeText={e => setEmail(e.trim())}
+                keyboardType="email-address"
               />
               <Text style={styles.inputHeading}>Password</Text>
               <TextInput
                 style={styles.input}
                 value={password.trim()}
                 onChangeText={e => setPassword(e.trim())}
+                secureTextEntry={true}
               />
               <TouchableOpacity
                 style={styles.button}

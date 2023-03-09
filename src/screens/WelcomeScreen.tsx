@@ -35,7 +35,9 @@ const WelcomeScreen = () => {
             <Text style={[styles.defaultText]}>Sign in with Email</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate('signup' as never)}
+            onPress={() => {
+              navigation.navigate('signup' as never);
+            }}
             style={[
               styles.loginButton,
               {backgroundColor: currentTheme.primary},
