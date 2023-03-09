@@ -16,7 +16,7 @@ import {themeDataDark1, themeDataLight1} from '../configs/themeData';
 import {signInWithEmailAndPassword} from '../utils/firebaseHandler';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store/store';
-import LoadingScreen from './LoadingScreen';
+import AnimatedButton from './component/AnimatedButton';
 
 const currentTheme = themeDataDark1 || themeDataLight1;
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
@@ -34,9 +34,10 @@ const SignIn = () => {
       setPassword('');
     }
   };
-  if (loadingState.loading) {
-    return <LoadingScreen indicatorColor={currentTheme.primary} />;
-  }
+
+  // if (loadingState.loading) {
+  //   return <LoadingScreen indicatorColor={currentTheme.primary} />;
+  // }
 
   return (
     <SafeAreaView>
@@ -66,13 +67,16 @@ const SignIn = () => {
                 secureTextEntry={true}
               />
               <TouchableOpacity
-                style={styles.button}
+                disabled={loadingState.loading}
                 onPress={() => {
                   if (email && password) {
                     submitHandler();
                   }
                 }}>
-                <Text style={styles.buttonText}>Sign In</Text>
+                <AnimatedButton
+                  currentTheme={currentTheme}
+                  buttonText={'Signin'}
+                />
               </TouchableOpacity>
             </View>
             <Text style={styles.footerText}>
@@ -149,18 +153,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     color: currentTheme.primary,
   },
-  button: {
-    backgroundColor: currentTheme.primary,
-    padding: 15,
-    borderRadius: 25,
-    marginTop: 30,
-    minWidth: 350,
-  },
-  buttonText: {
-    color: currentTheme.text,
-    textAlign: 'center',
-    fontSize: 15,
-  },
+
   footerText: {
     color: currentTheme.textLight,
     textAlign: 'center',
