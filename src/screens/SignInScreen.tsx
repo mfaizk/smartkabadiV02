@@ -12,6 +12,7 @@ import {
   StatusBar,
   // ActivityIndicator,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import {themeDataDark1, themeDataLight1} from '../configs/themeData';
 import {signInWithEmailAndPassword} from '../utils/firebaseHandler';
 import {useSelector} from 'react-redux';
@@ -24,6 +25,7 @@ const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isObsecure, setisObsecure] = useState(true);
   const nav = useNavigation();
   const loadingState = useSelector((state: RootState) => state.loading);
   const submitHandler = (): void => {
@@ -60,12 +62,21 @@ const SignIn = () => {
                 keyboardType="email-address"
               />
               <Text style={styles.inputHeading}>Password</Text>
-              <TextInput
-                style={styles.input}
-                value={password.trim()}
-                onChangeText={e => setPassword(e.trim())}
-                secureTextEntry={true}
-              />
+              <View style={[styles.input, styles.passwordView]}>
+                <TextInput
+                  secureTextEntry={isObsecure}
+                  style={styles.passwordInput}
+                  value={password.trim()}
+                  onChangeText={e => setPassword(e.trim())}
+                />
+                <Icon
+                  name={isObsecure ? 'eye-off' : 'eye'}
+                  size={25}
+                  color="#111111"
+                  style={styles.inputIcon}
+                  onPress={() => setisObsecure(prev => !prev)}
+                />
+              </View>
               <TouchableOpacity
                 disabled={loadingState.loading}
                 onPress={() => {
@@ -152,6 +163,18 @@ const styles = StyleSheet.create({
     minWidth: 350,
     paddingLeft: 20,
     color: currentTheme.primary,
+  },
+  passwordView: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  passwordInput: {
+    color: currentTheme.primary,
+  },
+  inputIcon: {
+    alignSelf: 'center',
+    marginLeft: 'auto',
+    paddingRight: 10,
   },
 
   footerText: {

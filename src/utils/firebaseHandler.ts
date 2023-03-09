@@ -88,7 +88,7 @@ export function signOut(navigation: any): void {
       });
 
       navigation.dispatch(StackActions.popToTop());
-      navigation.navigate('welcome');
+      navigation.replace('welcome');
     })
     .catch(() => {
       Snackbar.show({
