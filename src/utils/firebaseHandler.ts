@@ -24,7 +24,7 @@ export function signUpWithEmailAndPassword(
       });
 
       navigation.dispatch(StackActions.popToTop());
-      navigation.navigate('home');
+      navigation.replace('home');
       dispatch(flipState());
     })
     .catch(e => {

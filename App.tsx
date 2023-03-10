@@ -44,16 +44,7 @@ const App = () => {
         <Stack.Screen
           name="signup"
           component={SignUp}
-          options={{
-            headerTitle: 'User Signup',
-            headerShadowVisible: false,
-            headerTintColor: 'gray',
-            headerTitleAlign: 'center',
-            headerBackVisible: false,
-            headerStyle: {
-              backgroundColor: '#f2f2f2',
-            },
-          }}
+          options={{headerShown: false}}
         />
 
         <Stack.Screen name="home" component={HomeScreen} />

@@ -92,7 +92,11 @@ const SignIn = () => {
             </View>
             <Text style={styles.footerText}>
               Don't have an accoun?
-              <Text style={{color: currentTheme.primary}}>Sign up</Text>
+              <Text
+                style={{color: currentTheme.primary}}
+                onPress={() => nav.navigate('signup' as never)}>
+                Sign up
+              </Text>
             </Text>
           </View>
         </View>
@@ -161,6 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: currentTheme.textLightXl,
     borderRadius: 20,
     minWidth: 350,
+    maxWidth: 350,
     paddingLeft: 20,
     color: currentTheme.primary,
   },
@@ -170,6 +175,7 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     color: currentTheme.primary,
+    flexGrow: 1,
   },
   inputIcon: {
     alignSelf: 'center',
