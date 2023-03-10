@@ -51,8 +51,10 @@ const WelcomeScreen = () => {
             <Text style={[styles.defaultText]}>Create an account</Text>
           </TouchableOpacity>
         </View>
-        <Text style={[styles.defaultText, styles.footerText]}>
-          Are you kabadivala? {'  '}SignIn
+        <Text
+          style={[styles.defaultText, styles.footerText]}
+          onPress={() => navigation.navigate('admin-signin' as never)}>
+          Are you kabadivala? Sigin
         </Text>
       </View>
     </SafeAreaView>
