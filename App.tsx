@@ -34,6 +34,7 @@ const App = () => {
           setLoadingState(false);
         }
       } catch (e) {
+        await AsyncStorage.setItem(defaultHome, homeValue.WELCOME);
         console.log(e);
       }
     })();
@@ -41,8 +42,14 @@ const App = () => {
 
   if (loadingState) {
     return (
-      <View>
-        <ActivityIndicator />
+      <View
+        style={{
+          backgroundColor: 'blue',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <ActivityIndicator size={50} color="white" />
       </View>
     );
   }

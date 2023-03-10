@@ -82,19 +82,21 @@ export function signInWithEmailAndPassword(
     });
 }
 
-export function signOut(navigation: any): void {
+export function signOut(navigation: any, autoLogout: boolean = false): void {
   auth()
     .signOut()
     .then(() => {
       AsyncStorage.setItem(defaultHome, homeValue.WELCOME);
 
       dispatch(updateAuthState({user: null}));
-      Snackbar.show({
-        text: 'SignOut successfull',
-        duration: Snackbar.LENGTH_SHORT,
-        textColor: 'white',
-        backgroundColor: 'green',
-      });
+      if (!autoLogout) {
+        Snackbar.show({
+          text: 'SignOut successfull',
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: 'white',
+          backgroundColor: 'green',
+        });
+      }
 
       navigation.dispatch(StackActions.popToTop());
       navigation.replace('welcome');
@@ -137,13 +139,13 @@ export function adminSignIn(nav: any, email: string, password: string): void {
             AsyncStorage.setItem(defaultHome, homeValue.HOME);
 
             dispatch(flipState());
+            signOut(nav, true);
             Snackbar.show({
               text: 'You are not admin',
               duration: Snackbar.LENGTH_SHORT,
               textColor: 'white',
-              backgroundColor: 'green',
+              backgroundColor: 'red',
             });
-            signOut(nav);
           }
         })
         .catch(e => {
