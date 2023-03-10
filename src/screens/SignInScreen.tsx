@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {
   View,
   Text,
@@ -13,13 +13,12 @@ import {
   // ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import {themeDataDark1, themeDataLight1} from '../configs/themeData';
 import {signInWithEmailAndPassword} from '../utils/firebaseHandler';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store/store';
 import AnimatedButton from './component/AnimatedButton';
+import {themeState} from '../redux/reducer/ThemeReducer';
 
-const currentTheme = themeDataDark1 || themeDataLight1;
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 
 const SignIn = () => {
@@ -28,6 +27,7 @@ const SignIn = () => {
   const [isObsecure, setisObsecure] = useState(true);
   const nav = useNavigation();
   const loadingState = useSelector((state: RootState) => state.loading);
+  const currentTheme = useSelector((state: RootState) => state.theme);
   const submitHandler = (): void => {
     if (email && password) {
       // setClick(true);
@@ -36,10 +36,7 @@ const SignIn = () => {
       setPassword('');
     }
   };
-
-  // if (loadingState.loading) {
-  //   return <LoadingScreen indicatorColor={currentTheme.primary} />;
-  // }
+  const styles = useMemo(() => createStyles(currentTheme), [currentTheme]);
 
   return (
     <SafeAreaView>
@@ -104,91 +101,93 @@ const SignIn = () => {
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  body: {
-    minHeight: Dimensions.get('screen').height - statusBarHeight,
-    minWidth: Dimensions.get('screen').width,
-    backgroundColor: currentTheme.primary,
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  formCard: {
-    backgroundColor: currentTheme.background,
-    minHeight: Dimensions.get('screen').height * 0.8 - statusBarHeight,
-    minWidth: Dimensions.get('screen').width,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  hedaing: {
-    color: currentTheme.text,
-    fontSize: 30,
-    fontWeight: '800',
-    alignSelf: 'flex-start',
-    marginBottom: 50,
-    marginLeft: 50,
-  },
-  formTextCardView: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    minWidth: 350,
-  },
-  cardHeading: {
-    color: currentTheme.primary,
-    fontSize: 20,
-    fontWeight: '800',
-  },
-  subCardHeading: {
-    color: currentTheme.textLight,
-    marginTop: 5,
-  },
-  formCardInputView: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 50,
-    minWidth: 350,
-  },
-  inputHeading: {
-    color: currentTheme.textLight,
-    marginBottom: 10,
-    marginLeft: 10,
-    marginTop: 10,
-    alignSelf: 'flex-start',
-  },
-  input: {
-    backgroundColor: currentTheme.textLightXl,
-    borderRadius: 20,
-    minWidth: 350,
-    maxWidth: 350,
-    paddingLeft: 20,
-    color: currentTheme.primary,
-  },
-  passwordView: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  passwordInput: {
-    color: currentTheme.primary,
-    flexGrow: 1,
-  },
-  inputIcon: {
-    alignSelf: 'center',
-    marginLeft: 'auto',
-    paddingRight: 10,
-  },
+const createStyles = (currentTheme: themeState) => {
+  const styles = StyleSheet.create({
+    body: {
+      minHeight: Dimensions.get('screen').height - statusBarHeight,
+      minWidth: Dimensions.get('screen').width,
+      backgroundColor: currentTheme.primary,
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    formCard: {
+      backgroundColor: currentTheme.background,
+      minHeight: Dimensions.get('screen').height * 0.8 - statusBarHeight,
+      minWidth: Dimensions.get('screen').width,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      padding: 20,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    hedaing: {
+      color: currentTheme.text,
+      fontSize: 30,
+      fontWeight: '800',
+      alignSelf: 'flex-start',
+      marginBottom: 50,
+      marginLeft: 50,
+    },
+    formTextCardView: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      minWidth: 350,
+    },
+    cardHeading: {
+      color: currentTheme.primary,
+      fontSize: 20,
+      fontWeight: '800',
+    },
+    subCardHeading: {
+      color: currentTheme.textLight,
+      marginTop: 5,
+    },
+    formCardInputView: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 50,
+      minWidth: 350,
+    },
+    inputHeading: {
+      color: currentTheme.textLight,
+      marginBottom: 10,
+      marginLeft: 10,
+      marginTop: 10,
+      alignSelf: 'flex-start',
+    },
+    input: {
+      backgroundColor: currentTheme.textLightXl,
+      borderRadius: 20,
+      minWidth: 350,
+      maxWidth: 350,
+      paddingLeft: 20,
+      color: currentTheme.primary,
+    },
+    passwordView: {
+      display: 'flex',
+      flexDirection: 'row',
+    },
+    passwordInput: {
+      color: currentTheme.primary,
+      flexGrow: 1,
+    },
+    inputIcon: {
+      alignSelf: 'center',
+      marginLeft: 'auto',
+      paddingRight: 10,
+    },
 
-  footerText: {
-    color: currentTheme.textLight,
-    textAlign: 'center',
-    marginTop: 'auto',
-    marginBottom: 15,
-  },
-});
-
+    footerText: {
+      color: currentTheme.textLight,
+      textAlign: 'center',
+      marginTop: 'auto',
+      marginBottom: 15,
+    },
+  });
+  return styles;
+};
 export default SignIn;

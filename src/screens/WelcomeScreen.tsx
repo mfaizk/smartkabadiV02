@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,18 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
-import {themeDataDark1, themeDataLight1} from '../configs/themeData';
+import {RootState} from '../redux/store/store';
+import {useSelector} from 'react-redux';
+import {themeState} from '../redux/reducer/ThemeReducer';
+// import {themeDataDark1} from '../configs/themeData';
 
-const currentTheme = themeDataDark1 || themeDataLight1;
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 const WelcomeScreen = () => {
   const navigation = useNavigation();
+
+  const currentTheme = useSelector((state: RootState) => state.theme);
+
+  const styles = useMemo(() => creatStyles(currentTheme), [currentTheme]);
 
   return (
     <SafeAreaView>
@@ -53,54 +59,57 @@ const WelcomeScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  body: {
-    backgroundColor: currentTheme.primary,
-    display: 'flex',
-    height: Dimensions.get('screen').height - statusBarHeight,
-    width: Dimensions.get('screen').width,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingBottom: 100,
-    textAlign: 'right',
-  },
-  textBody: {
-    minWidth: 300,
-  },
-  defaultText: {
-    color: currentTheme.text,
-  },
-  heading: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: currentTheme.text,
-    marginBottom: 20,
-  },
-  subHeading: {
-    fontSize: 12,
-  },
-  subHeadingBold: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 50,
-  },
+const creatStyles = (currentTheme: themeState) => {
+  const styles = StyleSheet.create({
+    body: {
+      backgroundColor: currentTheme.primary,
+      display: 'flex',
+      height: Dimensions.get('screen').height - statusBarHeight,
+      width: Dimensions.get('screen').width,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      paddingBottom: 100,
+      textAlign: 'right',
+    },
+    textBody: {
+      minWidth: 300,
+    },
+    defaultText: {
+      color: currentTheme.text,
+    },
+    heading: {
+      fontSize: 40,
+      fontWeight: 'bold',
+      color: currentTheme.text,
+      marginBottom: 20,
+    },
+    subHeading: {
+      fontSize: 12,
+    },
+    subHeadingBold: {
+      fontSize: 20,
+      fontWeight: '700',
+      marginBottom: 50,
+    },
 
-  loginButton: {
-    minHeight: 40,
-    borderWidth: 1,
-    borderColor: currentTheme.borderColor,
-    minWidth: 300,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: currentTheme.tertiary,
-    marginBottom: 10,
-  },
-  footerText: {
-    alignSelf: 'center',
-    marginTop: 15,
-  },
-});
+    loginButton: {
+      minHeight: 40,
+      borderWidth: 1,
+      borderColor: currentTheme.borderColor,
+      minWidth: 300,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 10,
+      backgroundColor: currentTheme.tertiary,
+      marginBottom: 10,
+    },
+    footerText: {
+      alignSelf: 'center',
+      marginTop: 15,
+    },
+  });
+  return styles;
+};
 
 export default WelcomeScreen;
