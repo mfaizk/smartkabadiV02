@@ -88,7 +88,11 @@ const App = () => {
           component={SignUp}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="home" component={HomeScreen} />
+        <Stack.Screen
+          name="home"
+          component={HomeScreen}
+          options={{headerShown: false}}
+        />
 
         {/* Admin-Route-Start-here */}
         <Stack.Screen

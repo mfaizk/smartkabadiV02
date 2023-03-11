@@ -1,18 +1,51 @@
 import React from 'react';
-import {Button, Text, View} from 'react-native';
-import {signOut} from '../utils/firebaseHandler';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import MainScreen from './TabHomeScreens/MainScreen';
+import SettingScreen from './TabHomeScreens/SettingScreen';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store/store';
-import {useNavigation} from '@react-navigation/native';
 
+/* eslint-disable */
+const Tab = createBottomTabNavigator();
 const HomeScreen = () => {
-  const currentUser = useSelector((state: RootState) => state.auth);
-  const nav = useNavigation();
+  const currentTheme = useSelector((state: RootState) => state.theme);
   return (
-    <View>
-      <Button title="Logout" onPress={() => signOut(nav)} />
-      <Text style={{color: 'black'}}>Hello {currentUser.user?.email}</Text>
-    </View>
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarStyle: {
+          backgroundColor: currentTheme.background,
+        },
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          let style;
+          if (route.name === 'user-home') {
+            iconName = focused ? 'home' : 'home-outline';
+            style = focused ? 25 : 20;
+          } else if (route.name == 'user-setting') {
+            iconName = focused ? 'settings' : 'settings-outline';
+            style = focused ? 25 : 20;
+          }
+          return (
+            <Icon
+              name={iconName || 'reload-outline'}
+              size={style}
+              color={color}
+            />
+          );
+        },
+      })}>
+      <Tab.Screen
+        name="user-home"
+        component={MainScreen}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="user-setting"
+        component={SettingScreen}
+        options={{headerShown: false}}
+      />
+    </Tab.Navigator>
   );
 };
 

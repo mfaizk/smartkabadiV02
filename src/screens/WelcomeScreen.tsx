@@ -10,8 +10,8 @@ import {
   StatusBar,
 } from 'react-native';
 import {RootState} from '../redux/store/store';
-import {useDispatch, useSelector} from 'react-redux';
-import {changeTheme, themeState} from '../redux/reducer/ThemeReducer';
+import {useSelector} from 'react-redux';
+import {themeState} from '../redux/reducer/ThemeReducer';
 // import {themeDataDark1} from '../configs/themeData';
 
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;

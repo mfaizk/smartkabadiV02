@@ -82,7 +82,7 @@ export function signInWithEmailAndPassword(
     });
 }
 
-export function signOut(navigation: any, autoLogout: boolean = false): void {
+export function signOut(navigation: any, autoLogout: boolean = false) {
   auth()
     .signOut()
     .then(() => {
