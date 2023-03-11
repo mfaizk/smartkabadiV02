@@ -1,4 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+import {themeStringKey} from '../../utils/constValues';
 
 export interface themePayload {
   themeNumber: number;
@@ -35,7 +37,20 @@ export const themeSlice = createSlice({
     changeTheme: (state, action: PayloadAction<themePayload>) => {
       const {themeNumber} = action.payload;
       switch (themeNumber) {
+        case 0:
+          AsyncStorage.setItem(themeStringKey, '0');
+          state.primary = '#060047';
+          state.secondary = '#B3005E';
+          state.tertiary = '#E90064';
+          state.quaternary = '#FF5F9E';
+          state.text = '#ffffff';
+          state.borderColor = '#ffffff';
+          state.background = '#ffffff';
+          state.textLight = '#758283';
+          state.textLightXl = '#cce3e6';
+          break;
         case 1:
+          AsyncStorage.setItem(themeStringKey, '1');
           state.primary = '#EDF1D6';
           state.secondary = '#9DC08B';
           state.tertiary = '#609966';

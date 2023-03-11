@@ -10,8 +10,8 @@ import {
   StatusBar,
 } from 'react-native';
 import {RootState} from '../redux/store/store';
-import {useSelector} from 'react-redux';
-import {themeState} from '../redux/reducer/ThemeReducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {changeTheme, themeState} from '../redux/reducer/ThemeReducer';
 // import {themeDataDark1} from '../configs/themeData';
 
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
@@ -21,6 +21,7 @@ const WelcomeScreen = () => {
   const currentTheme = useSelector((state: RootState) => state.theme);
 
   const styles = useMemo(() => creatStyles(currentTheme), [currentTheme]);
+  // const dispatch = useDispatch();
 
   return (
     <SafeAreaView>
@@ -43,6 +44,7 @@ const WelcomeScreen = () => {
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('signup' as never);
+              // dispatch(changeTheme({themeNumber: 0}));
             }}
             style={[
               styles.loginButton,

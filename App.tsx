@@ -5,24 +5,39 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SignUp from './src/screens/SignUpScreen';
 import SignIn from './src/screens/SignInScreen';
-import {useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import HomeScreen from './src/screens/HomeScreen';
-import {RootState} from './src/redux/store/store';
+// import {RootState} from './src/redux/store/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdminSignInScreen from './src/screens/adminScreens/AdminSignInScreen';
 import AdminHomeScreen from './src/screens/adminScreens/AdminHomeScreen';
-import {defaultHome, homeValue} from './src/utils/constValues';
+import {defaultHome, homeValue, themeStringKey} from './src/utils/constValues';
 import {ActivityIndicator, View} from 'react-native';
+import {changeTheme} from './src/redux/reducer/ThemeReducer';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  const currentAuthState = useSelector((state: RootState) => state.auth.user);
+  // const currentAuthState = useSelector((state: RootState) => state.auth.user);
   const [loadingState, setLoadingState] = useState(true);
   const [currentHomeState, setCurrentHomeState] = useState('welcome');
+  const dispatch = useDispatch();
   useEffect(() => {
-    console.log(currentAuthState?.email);
-
     (async function initialRun() {
+      // theme-logic-start-here
+      try {
+        if (await AsyncStorage.getItem(themeStringKey)) {
+          dispatch(
+            changeTheme({
+              themeNumber:
+                Number(await AsyncStorage.getItem(themeStringKey)) || 0,
+            }),
+          );
+        } else {
+          await AsyncStorage.setItem(themeStringKey, '0');
+        }
+      } catch (error) {}
+      // theme-logic-end-here
+
       try {
         if (await AsyncStorage.getItem(defaultHome)) {
           setCurrentHomeState(

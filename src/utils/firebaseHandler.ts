@@ -111,6 +111,8 @@ export function signOut(navigation: any, autoLogout: boolean = false): void {
     });
 }
 
+//Admin-Function Start-here
+
 export function adminSignIn(nav: any, email: string, password: string): void {
   // let user: FirebaseAuthTypes.UserCredential;
   dispatch(flipState());
@@ -159,5 +161,16 @@ export function adminSignIn(nav: any, email: string, password: string): void {
           });
           dispatch(flipState());
         });
+    })
+    .catch(e => {
+      dispatch(flipState());
+      Snackbar.show({
+        text: e.message || 'unable to login',
+        duration: Snackbar.LENGTH_SHORT,
+        textColor: 'white',
+        backgroundColor: 'red',
+      });
     });
 }
+
+//Admin-Function End-here
