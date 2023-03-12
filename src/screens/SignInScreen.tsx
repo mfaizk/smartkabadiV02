@@ -165,14 +165,14 @@ const createStyles = (currentTheme: themeState) => {
       minWidth: 350,
       maxWidth: 350,
       paddingLeft: 20,
-      color: currentTheme.primary,
+      color: currentTheme.textLight,
     },
     passwordView: {
       display: 'flex',
       flexDirection: 'row',
     },
     passwordInput: {
-      color: currentTheme.primary,
+      color: currentTheme.textLight,
       flexGrow: 1,
     },
     inputIcon: {
