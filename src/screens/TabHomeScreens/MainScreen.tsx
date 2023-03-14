@@ -6,7 +6,10 @@ import {
   View,
   TouchableOpacity,
   Image,
+  ScrollView,
+  TextInput,
 } from 'react-native';
+import {Formik} from 'formik';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store/store';
 import {themeState} from '../../redux/reducer/ThemeReducer';
@@ -14,7 +17,15 @@ import {Dimensions} from 'react-native';
 import Document from 'react-native-document-picker';
 import Snackbar from 'react-native-snackbar';
 import Permission from 'react-native-permissions';
-import {ScrollView} from 'react-native-gesture-handler';
+import {Picker} from '@react-native-picker/picker';
+import {productCategory} from '../../utils/constValues';
+
+interface formInterface {
+  address: string;
+  location: string;
+  product_description: string;
+  category: string;
+}
 
 const MainScreen = () => {
   const currentTheme = useSelector((state: RootState) => state.theme);
@@ -24,6 +35,12 @@ const MainScreen = () => {
     string | boolean
   >('loading');
   const styles = useMemo(() => createTheme(currentTheme), [currentTheme]);
+  const initialValues: formInterface = {
+    address: '',
+    category: '',
+    location: '',
+    product_description: '',
+  };
 
   const requestCameraPermission = async () => {
     try {
@@ -70,6 +87,9 @@ const MainScreen = () => {
       });
     }
   }
+  function onsubmitForm(values) {
+    console.log(values);
+  }
 
   if (isPermissionAllowed === false) {
     return (
@@ -113,6 +133,47 @@ const MainScreen = () => {
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
+        {/* form-start-here */}
+        <Formik initialValues={initialValues} onSubmit={onsubmitForm}>
+          {({handleChange, handleBlur, handleSubmit, values}) => (
+            <View style={styles.formStyle}>
+              <TextInput
+                onChangeText={handleChange('address')}
+                onBlur={handleBlur('address')}
+                value={values.address}
+                placeholder="Address"
+                style={styles.inputAddressStyle}
+                multiline
+                textAlignVertical="top"
+                numberOfLines={5}
+              />
+              <TextInput
+                onChangeText={handleChange('product_description')}
+                onBlur={handleBlur('product_description')}
+                value={values.product_description}
+                placeholder="Product Description"
+                style={styles.inputStyle}
+              />
+              <Picker
+                selectedValue={values.category}
+                onValueChange={handleChange('category')}
+                onBlur={handleBlur('category')}
+                placeholder="Category"
+                style={styles.inputStyle}>
+                {productCategory.map((e, i) => (
+                  <Picker.Item label={e} value={e} key={i} />
+                ))}
+              </Picker>
+
+              <TouchableOpacity
+                onPress={handleSubmit}
+                style={styles.submitButtonStyle}>
+                <Text style={styles.dangerButtonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </Formik>
+        {/* form-end-here */}
         {image !== '' ? (
           <TouchableOpacity
             style={styles.imageContainer}
@@ -150,7 +211,7 @@ const createTheme = (currentTheme: themeState) => {
   const style = StyleSheet.create({
     mainContainer: {
       flex: 1,
-      backgroundColor: currentTheme.textLight,
+      backgroundColor: currentTheme.primary,
       justifyContent: 'flex-start',
       alignItems: 'center',
       paddingVertical: 10,
@@ -174,7 +235,8 @@ const createTheme = (currentTheme: themeState) => {
     },
     dangerButton: {
       backgroundColor: 'red',
-      width: '82%',
+      minWidth: 330,
+      maxWidth: 330,
       borderRadius: 10,
       paddingVertical: 10,
       marginTop: 10,
@@ -182,6 +244,48 @@ const createTheme = (currentTheme: themeState) => {
     dangerButtonText: {
       textAlign: 'center',
       fontSize: 20,
+    },
+    formStyle: {
+      marginTop: 20,
+      backgroundColor: currentTheme.background,
+      flex: 1,
+      minWidth: Dimensions.get('screen').width * 0.9,
+      padding: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    inputAddressStyle: {
+      backgroundColor: currentTheme.textLight,
+      minWidth: 330,
+      maxWidth: 330,
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      color: currentTheme.textLightXl,
+      fontSize: 20,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+    },
+    inputStyle: {
+      backgroundColor: currentTheme.textLight,
+      minWidth: 330,
+      maxWidth: 330,
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      color: currentTheme.textLightXl,
+      fontSize: 15,
+      margin: 5,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+    },
+    submitButtonStyle: {
+      minWidth: 330,
+      maxWidth: 330,
+      backgroundColor: currentTheme.tertiary,
+      borderRadius: 10,
+      paddingVertical: 10,
+      marginTop: 10,
     },
   });
 

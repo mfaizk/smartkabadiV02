@@ -5,3 +5,5 @@ export const homeValue = {
   WELCOME: 'welcome',
   ADMINHOME: 'admin-home',
 };
+
+export const productCategory = ['CLOTH', 'METAL', 'ORGAINIC'];
