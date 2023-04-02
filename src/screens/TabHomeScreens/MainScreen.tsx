@@ -270,8 +270,9 @@ const createTheme = (currentTheme: themeState) => {
     },
     image: {
       width: '100%',
+      height: 200,
       aspectRatio: 1,
-      resizeMode: 'contain',
+      resizeMode: 'center',
     },
     dangerButton: {
       backgroundColor: 'red',
