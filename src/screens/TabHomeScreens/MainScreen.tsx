@@ -19,10 +19,9 @@ import Snackbar from 'react-native-snackbar';
 import Permission from 'react-native-permissions';
 import {Picker} from '@react-native-picker/picker';
 import {productCategory} from '../../utils/constValues';
-
+import GetLocation, {Location} from 'react-native-get-location';
 interface formInterface {
   address: string;
-  location: string;
   product_description: string;
   category: string;
 }
@@ -31,6 +30,7 @@ const MainScreen = () => {
   const currentTheme = useSelector((state: RootState) => state.theme);
   const [isLoading, setisLoading] = useState(false);
   const [image, setImage] = useState('');
+  const [currentLocation, setCurrentLocation] = useState<Location>();
   const [isPermissionAllowed, setIsPermissionAllowed] = useState<
     string | boolean
   >('loading');
@@ -38,7 +38,6 @@ const MainScreen = () => {
   const initialValues: formInterface = {
     address: '',
     category: '',
-    location: '',
     product_description: '',
   };
 
@@ -89,6 +88,25 @@ const MainScreen = () => {
   }
   function onsubmitForm(values) {
     console.log(values);
+  }
+
+  async function getCurrentLocation() {
+    setIsPermissionAllowed('loading');
+    try {
+      const location = await GetLocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 60000,
+      });
+      setCurrentLocation(location);
+      setIsPermissionAllowed(true);
+    } catch (error) {
+      setIsPermissionAllowed(true);
+      Snackbar.show({
+        text: 'unable to load file',
+        backgroundColor: 'red',
+        textColor: 'white',
+      });
+    }
   }
 
   if (isPermissionAllowed === false) {
@@ -165,6 +183,54 @@ const MainScreen = () => {
                 ))}
               </Picker>
 
+              {/* Location-View-start */}
+              <View style={styles.locationView}>
+                <TouchableOpacity
+                  style={styles.locationViewButton}
+                  onPress={() => {
+                    getCurrentLocation();
+                  }}>
+                  <Text style={styles.locationViewButtonText}>
+                    {currentLocation
+                      ? `latitude:${currentLocation.latitude}, longitude:${currentLocation.longitude}`
+                      : 'Get Location'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {/* Location-View-end */}
+
+              {/* form-end-here */}
+              {image !== '' ? (
+                <TouchableOpacity
+                  style={styles.imageContainer}
+                  onPress={() => {
+                    imagePicker();
+                  }}>
+                  <Image source={{uri: image}} style={styles.image} />
+                </TouchableOpacity>
+              ) : (
+                // <></>
+                <TouchableOpacity
+                  style={styles.imageContainer}
+                  disabled={isLoading}
+                  onPress={() => {
+                    imagePicker();
+                  }}>
+                  {isLoading ? (
+                    <ActivityIndicator size={30} />
+                  ) : (
+                    <Text style={styles.imageContainerText}>Pick image</Text>
+                  )}
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                style={styles.dangerButton}
+                onPress={() => {
+                  setImage('');
+                  setisLoading(false);
+                }}>
+                <Text style={styles.dangerButtonText}>Remove Image</Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSubmit}
                 style={styles.submitButtonStyle}>
@@ -173,35 +239,6 @@ const MainScreen = () => {
             </View>
           )}
         </Formik>
-        {/* form-end-here */}
-        {image !== '' ? (
-          <TouchableOpacity
-            style={styles.imageContainer}
-            onPress={() => {
-              imagePicker();
-            }}>
-            <Image source={{uri: image}} style={styles.image} />
-          </TouchableOpacity>
-        ) : (
-          // <></>
-          <TouchableOpacity
-            style={styles.imageContainer}
-            disabled={isLoading}
-            onPress={() => {
-              imagePicker();
-            }}>
-            {isLoading ? (
-              <ActivityIndicator size={30} />
-            ) : (
-              <Text style={styles.imageContainerText}>Pick image</Text>
-            )}
-          </TouchableOpacity>
-        )}
-        <TouchableOpacity
-          style={styles.dangerButton}
-          onPress={() => setImage('')}>
-          <Text style={styles.dangerButtonText}>Remove Image</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -217,13 +254,16 @@ const createTheme = (currentTheme: themeState) => {
       paddingVertical: 10,
     },
     imageContainer: {
-      width: Dimensions.get('screen').width * 0.9,
       borderRadius: 10,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: currentTheme.primary,
       padding: 10,
+      marginTop: 10,
+      minWidth: 330,
+      maxWidth: 330,
+      height: 200,
     },
     imageContainerText: {
       fontSize: 20,
@@ -247,7 +287,7 @@ const createTheme = (currentTheme: themeState) => {
     },
     formStyle: {
       marginTop: 20,
-      backgroundColor: currentTheme.background,
+      backgroundColor: currentTheme.primary,
       flex: 1,
       minWidth: Dimensions.get('screen').width * 0.9,
       padding: 10,
@@ -286,6 +326,20 @@ const createTheme = (currentTheme: themeState) => {
       borderRadius: 10,
       paddingVertical: 10,
       marginTop: 10,
+    },
+    locationView: {
+      backgroundColor: currentTheme.tertiary,
+      marginTop: 10,
+      borderRadius: 10,
+    },
+    locationViewButton: {
+      minWidth: 330,
+      maxWidth: 330,
+      paddingVertical: 10,
+    },
+    locationViewButtonText: {
+      textAlign: 'center',
+      fontSize: 20,
     },
   });
 
