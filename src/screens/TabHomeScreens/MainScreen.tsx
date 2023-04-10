@@ -20,14 +20,29 @@ import Permission from 'react-native-permissions';
 import {Picker} from '@react-native-picker/picker';
 import {productCategory} from '../../utils/constValues';
 import GetLocation, {Location} from 'react-native-get-location';
+import database from '@react-native-firebase/database';
+import * as Yup from 'yup';
 interface formInterface {
   address: string;
   product_description: string;
   category: string;
 }
 
+const ProductSchema = Yup.object().shape({
+  address: Yup.string()
+    .min(15, 'Too short')
+    .max(300, 'Too Long')
+    .required('Address Required'),
+  product_description: Yup.string()
+    .min(15, 'Too short')
+    .max(300, 'Too Long')
+    .required('Description Required'),
+  category: Yup.string().required('Category Required'),
+});
+
 const MainScreen = () => {
   const currentTheme = useSelector((state: RootState) => state.theme);
+  const currentUser = useSelector((state: RootState) => state.auth);
   const [isLoading, setisLoading] = useState(false);
   const [image, setImage] = useState('');
   const [currentLocation, setCurrentLocation] = useState<Location>();
@@ -86,9 +101,46 @@ const MainScreen = () => {
       });
     }
   }
-  function onsubmitForm(values) {
-    console.log(values);
-  }
+  const onsubmitForm = (values: formInterface, resetForm) => {
+    if (
+      currentLocation?.latitude &&
+      image &&
+      values.address &&
+      values.category &&
+      values.product_description
+    ) {
+      setisLoading(true);
+      database()
+        .ref(`/product/${Date.now()}`)
+        .set(values)
+        .then(() => {
+          setisLoading(false);
+          setImage('');
+          setCurrentLocation(undefined);
+          resetForm();
+
+          Snackbar.show({
+            text: 'Data uploaded Sucessfull',
+            backgroundColor: 'green',
+            textColor: 'white',
+          });
+        })
+        .catch(e => {
+          Snackbar.show({
+            text: e.message || 'error occured while uploading',
+            backgroundColor: 'red',
+            textColor: 'white',
+          });
+          setisLoading(false);
+        });
+    } else {
+      Snackbar.show({
+        text: 'All field required',
+        backgroundColor: 'red',
+        textColor: 'white',
+      });
+    }
+  };
 
   async function getCurrentLocation() {
     setIsPermissionAllowed('loading');
@@ -152,8 +204,14 @@ const MainScreen = () => {
     <ScrollView>
       <View style={styles.mainContainer}>
         {/* form-start-here */}
-        <Formik initialValues={initialValues} onSubmit={onsubmitForm}>
-          {({handleChange, handleBlur, handleSubmit, values}) => (
+        <Formik
+          initialValues={initialValues}
+          onSubmit={async (values, {resetForm}) => {
+            onsubmitForm(values, resetForm);
+          }}
+          // validationSchema={ProductSchema}
+        >
+          {({handleChange, handleBlur, handleSubmit, values, errors}) => (
             <View style={styles.formStyle}>
               <TextInput
                 onChangeText={handleChange('address')}
@@ -165,6 +223,9 @@ const MainScreen = () => {
                 textAlignVertical="top"
                 numberOfLines={5}
               />
+              {errors.address && (
+                <Text style={styles.errorStyle}>{errors.address}</Text>
+              )}
               <TextInput
                 onChangeText={handleChange('product_description')}
                 onBlur={handleBlur('product_description')}
@@ -172,6 +233,11 @@ const MainScreen = () => {
                 placeholder="Product Description"
                 style={styles.inputStyle}
               />
+              {errors.product_description && (
+                <Text style={styles.errorStyle}>
+                  {errors.product_description}
+                </Text>
+              )}
               <Picker
                 selectedValue={values.category}
                 onValueChange={handleChange('category')}
@@ -182,7 +248,9 @@ const MainScreen = () => {
                   <Picker.Item label={e} value={e} key={i} />
                 ))}
               </Picker>
-
+              {errors.category && (
+                <Text style={styles.errorStyle}>{errors.category}</Text>
+              )}
               {/* Location-View-start */}
               <View style={styles.locationView}>
                 <TouchableOpacity
@@ -258,7 +326,7 @@ const createTheme = (currentTheme: themeState) => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: currentTheme.primary,
+      backgroundColor: currentTheme.quaternary,
       padding: 10,
       marginTop: 10,
       minWidth: 330,
@@ -341,6 +409,11 @@ const createTheme = (currentTheme: themeState) => {
     locationViewButtonText: {
       textAlign: 'center',
       fontSize: 20,
+    },
+    errorStyle: {
+      color: 'red',
+      minWidth: 330,
+      maxWidth: 330,
     },
   });
 
