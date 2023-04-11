@@ -38,7 +38,11 @@ const HomeScreen = () => {
       <Tab.Screen
         name="user-home"
         component={MainScreen}
-        options={{headerShown: false}}
+        options={{
+          headerTitle: 'Add Product',
+          headerStyle: {backgroundColor: currentTheme.background},
+          headerTitleStyle: {color: currentTheme.textLight},
+        }}
       />
       <Tab.Screen
         name="user-setting"

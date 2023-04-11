@@ -22,6 +22,7 @@ import {productCategory} from '../../utils/constValues';
 import GetLocation, {Location} from 'react-native-get-location';
 import database from '@react-native-firebase/database';
 import * as Yup from 'yup';
+import storage from '@react-native-firebase/storage';
 interface formInterface {
   address: string;
   product_description: string;
@@ -43,8 +44,10 @@ const ProductSchema = Yup.object().shape({
 const MainScreen = () => {
   const currentTheme = useSelector((state: RootState) => state.theme);
   const currentUser = useSelector((state: RootState) => state.auth);
+  const [isUploading, setIsUploading] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [image, setImage] = useState('');
+  const [imageName, setImageName] = useState('');
   const [currentLocation, setCurrentLocation] = useState<Location>();
   const [isPermissionAllowed, setIsPermissionAllowed] = useState<
     string | boolean
@@ -91,7 +94,7 @@ const MainScreen = () => {
         type: Document.types.images,
       });
       setImage(fileLoction.fileCopyUri || '');
-
+      setImageName(fileLoction.name || '');
       setisLoading(prev => !prev);
     } catch (e) {
       Snackbar.show({
@@ -109,41 +112,54 @@ const MainScreen = () => {
       values.category &&
       values.product_description
     ) {
-      setisLoading(true);
-      database()
-        .ref(`/product/${Date.now()}`)
-        .set(values)
-        .then(() => {
-          setisLoading(false);
-          setImage('');
-          setCurrentLocation(undefined);
-          resetForm();
+      setIsUploading(true);
 
-          Snackbar.show({
-            text: 'Data uploaded Sucessfull',
-            backgroundColor: 'green',
-            textColor: 'white',
-          });
-        })
-        .catch(e => {
-          Snackbar.show({
-            text: e.message || 'error occured while uploading',
-            backgroundColor: 'red',
-            textColor: 'white',
-          });
-          setisLoading(false);
+      const ref = storage().ref(Date.now() + imageName);
+      ref.putFile(image).then(() => {
+        ref.getDownloadURL().then(imgURL => {
+          database()
+            .ref(`/product/${Date.now()}`)
+            .set({
+              address: values.address,
+              category: values.category,
+              description: values.product_description,
+              latitude: currentLocation.latitude,
+              longitude: currentLocation.longitude,
+              imageURL: imgURL,
+            })
+            .then(() => {
+              setIsUploading(false);
+              setImage('');
+              setCurrentLocation(undefined);
+              resetForm();
+
+              Snackbar.show({
+                text: 'Data uploaded Sucessfull',
+                backgroundColor: 'green',
+                textColor: 'white',
+              });
+            })
+            .catch(e => {
+              Snackbar.show({
+                text: e.message || 'error occured while uploading',
+                backgroundColor: 'red',
+                textColor: 'white',
+              });
+              setIsUploading(false);
+            });
         });
+      });
     } else {
       Snackbar.show({
         text: 'All field required',
         backgroundColor: 'red',
         textColor: 'white',
       });
+      setisLoading(false);
     }
   };
 
   async function getCurrentLocation() {
-    setIsPermissionAllowed('loading');
     try {
       const location = await GetLocation.getCurrentPosition({
         enableHighAccuracy: true,
@@ -203,6 +219,15 @@ const MainScreen = () => {
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
+        {isUploading ? (
+          <>
+            <ActivityIndicator
+              size={50}
+              style={[styles.loadingIndicator, {}]}></ActivityIndicator>
+          </>
+        ) : (
+          <></>
+        )}
         {/* form-start-here */}
         <Formik
           initialValues={initialValues}
@@ -316,7 +341,7 @@ const createTheme = (currentTheme: themeState) => {
   const style = StyleSheet.create({
     mainContainer: {
       flex: 1,
-      backgroundColor: currentTheme.primary,
+      backgroundColor: currentTheme.background,
       justifyContent: 'flex-start',
       alignItems: 'center',
       paddingVertical: 10,
@@ -356,7 +381,7 @@ const createTheme = (currentTheme: themeState) => {
     },
     formStyle: {
       marginTop: 20,
-      backgroundColor: currentTheme.primary,
+      backgroundColor: currentTheme.background,
       flex: 1,
       minWidth: Dimensions.get('screen').width * 0.9,
       padding: 10,
@@ -414,6 +439,12 @@ const createTheme = (currentTheme: themeState) => {
       color: 'red',
       minWidth: 330,
       maxWidth: 330,
+    },
+    loadingIndicator: {
+      position: 'absolute',
+      zIndex: 10,
+      height: '100%',
+      width: '100%',
     },
   });
 
