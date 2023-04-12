@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 export interface productData {
   address: string;
   category: string;
@@ -20,7 +20,9 @@ const AdminDataListSlice = createSlice({
   name: 'adminDataList',
   initialState: [initialState],
   reducers: {
-    initialDataEntry: state => {},
+    initialDataEntry: (state, action: PayloadAction<productData>) => {
+      state.push(action.payload);
+    },
   },
 });
 
