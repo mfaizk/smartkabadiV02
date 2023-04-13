@@ -27,6 +27,7 @@ interface formInterface {
   address: string;
   product_description: string;
   category: string;
+  product_name: string;
 }
 
 const ProductSchema = Yup.object().shape({
@@ -39,6 +40,7 @@ const ProductSchema = Yup.object().shape({
     .max(300, 'Too Long')
     .required('Description Required'),
   category: Yup.string().required('Category Required'),
+  product_name: Yup.string().required('Name Required'),
 });
 
 const MainScreen = () => {
@@ -57,6 +59,7 @@ const MainScreen = () => {
     address: '',
     category: '',
     product_description: '',
+    product_name: '',
   };
 
   const requestCameraPermission = async () => {
@@ -102,6 +105,9 @@ const MainScreen = () => {
         backgroundColor: 'red',
         textColor: 'white',
       });
+      setImage('');
+      setImageName('');
+      setisLoading(prev => !prev);
     }
   }
   const onsubmitForm = (values: formInterface, resetForm) => {
@@ -110,7 +116,8 @@ const MainScreen = () => {
       image &&
       values.address &&
       values.category &&
-      values.product_description
+      values.product_description &&
+      values.product_name
     ) {
       setIsUploading(true);
 
@@ -126,6 +133,7 @@ const MainScreen = () => {
               latitude: currentLocation.latitude,
               longitude: currentLocation.longitude,
               imageURL: imgURL,
+              product_name: values.product_name,
             })
             .then(() => {
               setIsUploading(false);
@@ -223,7 +231,7 @@ const MainScreen = () => {
           <>
             <ActivityIndicator
               size={50}
-              style={[styles.loadingIndicator, {}]}></ActivityIndicator>
+              style={styles.loadingIndicator}></ActivityIndicator>
           </>
         ) : (
           <></>
@@ -239,6 +247,16 @@ const MainScreen = () => {
           {({handleChange, handleBlur, handleSubmit, values, errors}) => (
             <View style={styles.formStyle}>
               <TextInput
+                onChangeText={handleChange('product_name')}
+                onBlur={handleBlur('product_name')}
+                value={values.product_name}
+                placeholder="Product Name"
+                style={styles.inputStyle}
+              />
+              {errors.product_description && (
+                <Text style={styles.errorStyle}>{errors.product_name}</Text>
+              )}
+              <TextInput
                 onChangeText={handleChange('address')}
                 onBlur={handleBlur('address')}
                 value={values.address}
@@ -251,6 +269,7 @@ const MainScreen = () => {
               {errors.address && (
                 <Text style={styles.errorStyle}>{errors.address}</Text>
               )}
+
               <TextInput
                 onChangeText={handleChange('product_description')}
                 onBlur={handleBlur('product_description')}
@@ -345,6 +364,7 @@ const createTheme = (currentTheme: themeState) => {
       justifyContent: 'flex-start',
       alignItems: 'center',
       paddingVertical: 10,
+      height: '100%',
     },
     imageContainer: {
       borderRadius: 10,

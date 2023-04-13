@@ -6,6 +6,7 @@ export interface productData {
   imageURL: string;
   latitude: string;
   longitude: string;
+  product_name: string;
 }
 const initialState: productData = {
   address: '',
@@ -14,14 +15,17 @@ const initialState: productData = {
   imageURL: '',
   latitude: '',
   longitude: '',
+  product_name: '',
 };
 
 const AdminDataListSlice = createSlice({
   name: 'adminDataList',
   initialState: [initialState],
   reducers: {
-    initialDataEntry: (state, action: PayloadAction<productData>) => {
-      state.push(action.payload);
+    initialDataEntry: (state, action: PayloadAction<productData[]>) => {
+      state.length = 0;
+      state.push(...action.payload);
+      // console.log(state);
     },
   },
 });
