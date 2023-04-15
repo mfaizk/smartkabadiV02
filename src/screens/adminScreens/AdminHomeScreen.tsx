@@ -2,12 +2,12 @@ import React, {useEffect, useMemo} from 'react';
 import {
   View,
   Text,
-  Button,
   ActivityIndicator,
   StyleSheet,
   Image,
-  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store/store';
 import {signOut} from '../../utils/firebaseHandler';
@@ -15,7 +15,6 @@ import {useNavigation} from '@react-navigation/native';
 import {themeState} from '../../redux/reducer/ThemeReducer';
 import database from '@react-native-firebase/database';
 import {initialDataEntry} from '../../redux/reducer/AdminDataListReducer';
-import {productData} from '../../redux/reducer/AdminDataListReducer';
 import {FlatList} from 'react-native-gesture-handler';
 const AdminHomeScreen = () => {
   const currentUser = useSelector((state: RootState) => state.auth);
@@ -47,8 +46,15 @@ const AdminHomeScreen = () => {
 
   return (
     <View style={styles.mainContainer}>
-      <Button title="Admin Logout" onPress={() => signOut(nav)} />
-      <Text style={{color: 'yellow'}}>Hello {currentUser.user?.email}</Text>
+      <TouchableOpacity style={styles.FABlogut}>
+        <Icon
+          name="logout"
+          size={30}
+          style={styles.FABlogutIcon}
+          onPress={() => signOut(nav)}
+        />
+      </TouchableOpacity>
+
       <FlatList
         data={DataList}
         keyExtractor={item => item.imageURL}
@@ -91,12 +97,12 @@ const createStyle = (currentTheme: themeState) => {
   const styles = StyleSheet.create({
     mainContainer: {
       display: 'flex',
-      backgroundColor: currentTheme.primary,
+      backgroundColor: currentTheme.background,
       height: '100%',
     },
     card: {
       display: 'flex',
-      backgroundColor: currentTheme.primary,
+      backgroundColor: currentTheme.secondary,
       width: '95%',
       padding: 10,
       flexDirection: 'row',
@@ -104,8 +110,8 @@ const createStyle = (currentTheme: themeState) => {
       marginHorizontal: 10,
       borderRadius: 10,
       elevation: 10,
-      borderWidth: 1,
       borderColor: currentTheme.textLight,
+      marginVertical: 5,
     },
     cardImage: {
       aspectRatio: '1',
@@ -120,10 +126,27 @@ const createStyle = (currentTheme: themeState) => {
       padding: 10,
     },
     textStyle: {
-      color: currentTheme.textLight,
+      color: currentTheme.textLightXl,
     },
     textStyleAns: {
       color: currentTheme.text,
+    },
+    FABlogut: {
+      backgroundColor: 'red',
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+      height: 60,
+      width: 60,
+      borderRadius: 140,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 10,
+      elevation: 10,
+    },
+    FABlogutIcon: {
+      color: currentTheme.background,
     },
   });
   return styles;

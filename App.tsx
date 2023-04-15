@@ -5,7 +5,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SignUp from './src/screens/SignUpScreen';
 import SignIn from './src/screens/SignInScreen';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import HomeScreen from './src/screens/HomeScreen';
 // import {RootState} from './src/redux/store/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,12 +14,14 @@ import AdminHomeScreen from './src/screens/adminScreens/AdminHomeScreen';
 import {defaultHome, homeValue, themeStringKey} from './src/utils/constValues';
 import {ActivityIndicator, View} from 'react-native';
 import {changeTheme} from './src/redux/reducer/ThemeReducer';
+import {RootState} from './src/redux/store/store';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   // const currentAuthState = useSelector((state: RootState) => state.auth.user);
   const [loadingState, setLoadingState] = useState(true);
   const [currentHomeState, setCurrentHomeState] = useState('welcome');
+  const currentTheme = useSelector((state: RootState) => state.theme);
   const dispatch = useDispatch();
   useEffect(() => {
     (async function initialRun() {
@@ -103,7 +105,11 @@ const App = () => {
         <Stack.Screen
           name="admin-home"
           component={AdminHomeScreen}
-          options={{headerShown: false}}
+          options={{
+            headerTitle: 'Product List',
+            headerStyle: {backgroundColor: currentTheme.background},
+            headerTitleStyle: {color: currentTheme.textLightXl},
+          }}
         />
         {/* Admin-Route-end-here */}
       </Stack.Navigator>
