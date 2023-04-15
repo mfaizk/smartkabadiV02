@@ -134,6 +134,7 @@ const MainScreen = () => {
               longitude: currentLocation.longitude,
               imageURL: imgURL,
               product_name: values.product_name,
+              authorId: currentUser.user?.uid || 'a',
             })
             .then(() => {
               setIsUploading(false);
@@ -239,6 +240,7 @@ const MainScreen = () => {
         {/* form-start-here */}
         <Formik
           initialValues={initialValues}
+          validationSchema={ProductSchema}
           onSubmit={async (values, {resetForm}) => {
             onsubmitForm(values, resetForm);
           }}

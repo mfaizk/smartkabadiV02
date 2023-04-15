@@ -5,6 +5,7 @@ import MainScreen from './TabHomeScreens/MainScreen';
 import SettingScreen from './TabHomeScreens/SettingScreen';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store/store';
+import UploadedProductList from './TabHomeScreens/UploadedProductList';
 
 /* eslint-disable */
 const Tab = createBottomTabNavigator();
@@ -35,6 +36,11 @@ const HomeScreen = () => {
           );
         },
       })}>
+      <Tab.Screen
+        name="ProductList"
+        component={UploadedProductList}
+        options={{headerShown: false}}
+      />
       <Tab.Screen
         name="user-home"
         component={MainScreen}
