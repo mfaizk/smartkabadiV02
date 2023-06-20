@@ -20,6 +20,7 @@ import {initialDataEntry} from '../../redux/reducer/AdminDataListReducer';
 import {FlatList} from 'react-native-gesture-handler';
 import {Alert} from 'react-native';
 import {Dimensions} from 'react-native';
+import openMap from 'react-native-open-maps';
 const AdminHomeScreen = () => {
   const currentUser = useSelector((state: RootState) => state.auth);
   const currentTheme = useSelector((state: RootState) => state.theme);
@@ -38,6 +39,7 @@ const AdminHomeScreen = () => {
         Object.values(data.val()).forEach(e => {
           dispatch(initialDataEntry(Object.values(e)));
         });
+
         // console.log(DataList);
       } catch (error) {}
     })();
@@ -89,7 +91,14 @@ const AdminHomeScreen = () => {
                 style={[styles.mapButton, {backgroundColor: 'green'}]}>
                 <Text style={styles.buttonText}>Accept </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.mapButton}>
+              <TouchableOpacity
+                style={styles.mapButton}
+                onPress={() => {
+                  openMap({
+                    latitude: modalData.latitude,
+                    longitude: modalData.longitude,
+                  });
+                }}>
                 <Text style={styles.buttonText}>Open Map</Text>
               </TouchableOpacity>
             </View>
@@ -101,7 +110,7 @@ const AdminHomeScreen = () => {
           </View>
         </View>
       </Modal>
-      {/* Modal-start-here */}
+      {/* Modal-end-here */}
       <TouchableOpacity style={styles.FABlogut}>
         <Icon
           name="logout"
