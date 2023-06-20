@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  Modal,
+  Pressable,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,13 +18,16 @@ import {themeState} from '../../redux/reducer/ThemeReducer';
 import database from '@react-native-firebase/database';
 import {initialDataEntry} from '../../redux/reducer/AdminDataListReducer';
 import {FlatList} from 'react-native-gesture-handler';
+import {Alert} from 'react-native';
+import {Dimensions} from 'react-native';
 const AdminHomeScreen = () => {
   const currentUser = useSelector((state: RootState) => state.auth);
   const currentTheme = useSelector((state: RootState) => state.theme);
   const DataList = useSelector((state: RootState) => state.adminDataList);
   const dispatch = useDispatch();
   const styles = useMemo(() => createStyle(currentTheme), [currentTheme]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({});
   const nav = useNavigation();
   useEffect(() => {
     (async () => {
@@ -50,6 +55,53 @@ const AdminHomeScreen = () => {
 
   return (
     <View style={styles.mainContainer}>
+      {/* Modal-start-here */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalOpen}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setIsModalOpen(!isModalOpen);
+        }}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.heading}>Detail</Text>
+          <Image source={{uri: modalData.imageURL}} style={styles.modalImage} />
+          <View>
+            <Text style={styles.modalTitle}>
+              Name:{' '}
+              <Text style={styles.modalSubtitle}>{modalData.product_name}</Text>
+            </Text>
+            <Text style={styles.modalTitle}>
+              Description:{' '}
+              <Text style={styles.modalSubtitle}>{modalData.description}</Text>
+            </Text>
+            <Text style={styles.modalTitle}>
+              Category:{' '}
+              <Text style={styles.modalSubtitle}>{modalData.category}</Text>
+            </Text>
+            <Text style={styles.modalTitle}>
+              Address:{' '}
+              <Text style={styles.modalSubtitle}>{modalData.address}</Text>
+            </Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.mapButton, {backgroundColor: 'green'}]}>
+                <Text style={styles.buttonText}>Accept </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.mapButton}>
+                <Text style={styles.buttonText}>Open Map</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.closeModalButton}
+              onPress={() => setIsModalOpen(!isModalOpen)}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      {/* Modal-start-here */}
       <TouchableOpacity style={styles.FABlogut}>
         <Icon
           name="logout"
@@ -63,7 +115,12 @@ const AdminHomeScreen = () => {
         data={DataList}
         keyExtractor={item => item.imageURL}
         renderItem={({item}) => (
-          <View style={styles.card}>
+          <TouchableOpacity
+            onPress={() => {
+              setModalData(item);
+              setIsModalOpen(!isModalOpen);
+            }}
+            style={styles.card}>
             <Image
               style={styles.cardImage}
               source={{uri: item.imageURL || 'https://placehold.co/600x400'}}
@@ -88,7 +145,7 @@ const AdminHomeScreen = () => {
                 </Text>
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -152,6 +209,65 @@ const createStyle = (currentTheme: themeState) => {
     FABlogutIcon: {
       color: currentTheme.background,
     },
+
+    // Modal-style-start-here
+    modalContainer: {
+      height: Dimensions.get('window').height * 0.75,
+      backgroundColor: currentTheme.textLightXl,
+      position: 'relative',
+      top: Dimensions.get('window').height * 0.2,
+      padding: 10,
+      margin: 10,
+      borderRadius: 10,
+    },
+    modalImage: {
+      aspectRatio: 3 / 2,
+    },
+    modalTitle: {
+      fontWeight: '500',
+      color: currentTheme.tertiary,
+      fontSize: 18,
+    },
+    modalSubtitle: {
+      fontWeight: '500',
+      color: currentTheme.primary,
+      fontSize: 14,
+    },
+    heading: {
+      alignSelf: 'center',
+      fontSize: 18,
+      padding: 10,
+      color: currentTheme.primary,
+    },
+    buttonContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: 20,
+    },
+    mapButton: {
+      backgroundColor: currentTheme.tertiary,
+      alignSelf: 'center',
+      color: currentTheme.text,
+      paddingHorizontal: 18,
+      paddingVertical: 10,
+      marginTop: 15,
+      borderRadius: 10,
+      width: 150,
+    },
+    buttonText: {
+      color: currentTheme.text,
+      alignSelf: 'center',
+    },
+    closeModalButton: {
+      backgroundColor: 'red',
+      marginTop: 20,
+      padding: 10,
+      width: 300,
+      alignSelf: 'center',
+      borderRadius: 10,
+    },
+    // Modal-style-end-here
   });
   return styles;
 };
