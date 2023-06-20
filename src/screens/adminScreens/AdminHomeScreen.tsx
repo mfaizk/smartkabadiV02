@@ -8,8 +8,10 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
+  Linking,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store/store';
 import {signOut} from '../../utils/firebaseHandler';
@@ -94,10 +96,21 @@ const AdminHomeScreen = () => {
               <TouchableOpacity
                 style={styles.mapButton}
                 onPress={() => {
-                  openMap({
-                    latitude: modalData.latitude,
-                    longitude: modalData.longitude,
-                  });
+                  try {
+                    // openMap({
+                    //   provider: 'google',
+                    //   navigate: true,
+                    //   waypoints: [modalData.address],
+                    //   latitude: modalData.latitude,
+                    //   longitude: modalData.longitude,
+                    // });
+                    Linking.openURL(
+                      `google.navigation:q=${modalData.latitude}+${modalData.longitude}`,
+                    );
+                    // console.log('clicked');
+                  } catch (error) {
+                    console.log(error.message);
+                  }
                 }}>
                 <Text style={styles.buttonText}>Open Map</Text>
               </TouchableOpacity>
@@ -117,6 +130,14 @@ const AdminHomeScreen = () => {
           size={30}
           style={styles.FABlogutIcon}
           onPress={() => signOut(nav)}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.FABlogut, styles.FABTaskListIcon]}>
+        <Entypo
+          name="list"
+          size={30}
+          style={styles.FABlogutIcon}
+          onPress={() => nav.navigate('admin-task' as never)}
         />
       </TouchableOpacity>
 
@@ -217,6 +238,10 @@ const createStyle = (currentTheme: themeState) => {
     },
     FABlogutIcon: {
       color: currentTheme.background,
+    },
+    FABTaskListIcon: {
+      backgroundColor: 'green',
+      bottom: 80,
     },
 
     // Modal-style-start-here

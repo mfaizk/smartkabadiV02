@@ -15,6 +15,7 @@ import {defaultHome, homeValue, themeStringKey} from './src/utils/constValues';
 import {ActivityIndicator, View} from 'react-native';
 import {changeTheme} from './src/redux/reducer/ThemeReducer';
 import {RootState} from './src/redux/store/store';
+import AdminAcceptedTask from './src/screens/adminScreens/AdminAcceptedTask';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -107,6 +108,15 @@ const App = () => {
           component={AdminHomeScreen}
           options={{
             headerTitle: 'Product List',
+            headerStyle: {backgroundColor: currentTheme.background},
+            headerTitleStyle: {color: currentTheme.textLightXl},
+          }}
+        />
+        <Stack.Screen
+          name="admin-task"
+          component={AdminAcceptedTask}
+          options={{
+            headerTitle: 'Task List',
             headerStyle: {backgroundColor: currentTheme.background},
             headerTitleStyle: {color: currentTheme.textLightXl},
           }}
