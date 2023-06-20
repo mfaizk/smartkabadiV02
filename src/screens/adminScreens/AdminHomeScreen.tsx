@@ -29,7 +29,10 @@ const AdminHomeScreen = () => {
       try {
         const data = await database().ref('/product').once('value');
 
-        dispatch(initialDataEntry(Object.values(data.val())));
+        // dispatch(initialDataEntry(Object.values(data.val())));
+        Object.values(data.val()).forEach(e => {
+          dispatch(initialDataEntry(Object.values(e)));
+        });
         // console.log(DataList);
       } catch (error) {}
     })();
@@ -43,6 +46,7 @@ const AdminHomeScreen = () => {
       </View>
     );
   }
+  // console.log(DataList);
 
   return (
     <View style={styles.mainContainer}>
