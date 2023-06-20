@@ -16,6 +16,8 @@ import {ActivityIndicator, View} from 'react-native';
 import {changeTheme} from './src/redux/reducer/ThemeReducer';
 import {RootState} from './src/redux/store/store';
 import AdminAcceptedTask from './src/screens/adminScreens/AdminAcceptedTask';
+import RNBootSplash from 'react-native-bootsplash';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -28,6 +30,7 @@ const App = () => {
     (async function initialRun() {
       // theme-logic-start-here
       try {
+        await RNBootSplash.hide({fade: true, duration: 500});
         if (await AsyncStorage.getItem(themeStringKey)) {
           dispatch(
             changeTheme({
