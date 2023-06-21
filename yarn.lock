@@ -6306,7 +6306,7 @@ prompts@^2.0.1, prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@*, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@*, prop-types@^15.5.10, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -6443,6 +6443,13 @@ react-native-gradle-plugin@^0.71.15:
   resolved "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.15.tgz"
   integrity sha512-7S3pAuPaQJlhax6EZ4JMsDNpj05TfuzX9gPgWLrFfAIWIFLuJ6aDQYAZy2TEI9QJALPoWrj8LWaqP/DGYh14pw==
 
+react-native-material-cards@^1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/react-native-material-cards/-/react-native-material-cards-1.0.16.tgz#2099e20b486074f93dec510237b947172aa9f5b0"
+  integrity sha512-5jF4r1UH532U0mNOznhVIaqPkupKZkU8pck4ujBI7ccoXlbYyN4wOp0u4Pzxyvsh34FZXgcwd2lkoxyqbNrBrw==
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-open-maps@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/react-native-open-maps/-/react-native-open-maps-0.4.2.tgz#a0f40c02487ac2c1fda21221cf5a56508d48e35c"
@@ -6475,6 +6482,13 @@ react-native-snackbar@^2.4.0:
   version "2.4.0"
   resolved "https://registry.npmjs.org/react-native-snackbar/-/react-native-snackbar-2.4.0.tgz"
   integrity sha512-xEDIDxw0ubBHrsvzaMfrZlFoy+ai1WEJZQwyAsG55fqYxUfQM20h+V4v25u+/H/YKY7ZCRMdCZ8zB5JOnbvCQw==
+
+react-native-switch-selector@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-switch-selector/-/react-native-switch-selector-2.3.0.tgz#1f87758cf973da947cae8c8a8062fa7a8f701992"
+  integrity sha512-BnhbC7vRu5HIanANszNS5rbrXqYwDggJGg/Xik2NXDA1FSzId/WrxU5hicmmZzTrQSh9N5TS76YsnG1swNzBpA==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-native-vector-icons@^9.2.0:
   version "9.2.0"

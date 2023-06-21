@@ -18,7 +18,7 @@ import Document from 'react-native-document-picker';
 import Snackbar from 'react-native-snackbar';
 import Permission from 'react-native-permissions';
 import {Picker} from '@react-native-picker/picker';
-import {productCategory} from '../../utils/constValues';
+import {productCategory, productStatus} from '../../utils/constValues';
 import GetLocation, {Location} from 'react-native-get-location';
 import database from '@react-native-firebase/database';
 import * as Yup from 'yup';
@@ -120,12 +120,12 @@ const MainScreen = () => {
       values.product_name
     ) {
       setIsUploading(true);
-
+      const dateUid = Date.now();
       const ref = storage().ref(Date.now() + imageName);
       ref.putFile(image).then(() => {
         ref.getDownloadURL().then(imgURL => {
           database()
-            .ref(`/product/${Date.now()}`)
+            .ref(`/product/${currentUser.user?.uid}/${dateUid}`)
             .set({
               address: values.address,
               category: values.category,
@@ -135,6 +135,8 @@ const MainScreen = () => {
               imageURL: imgURL,
               product_name: values.product_name,
               authorId: currentUser.user?.uid || 'a',
+              uid: dateUid,
+              status: productStatus.ACTIVE,
             })
             .then(() => {
               setIsUploading(false);

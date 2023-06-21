@@ -1,19 +1,41 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {themeState} from '../../redux/reducer/ThemeReducer';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store/store';
 import database from '@react-native-firebase/database';
 import {FlatList} from 'react-native-gesture-handler';
 import loadingGIF from '../../../assets/loading.gif';
+import Icon from 'react-native-vector-icons/Feather';
+import {
+  Card,
+  CardTitle,
+  CardContent,
+  CardAction,
+  CardButton,
+  CardImage,
+} from 'react-native-material-cards';
 
 const UploadedProductList = () => {
   const currentTheme = useSelector((state: RootState) => state.theme);
   const currentUser = useSelector((state: RootState) => state.auth);
   const styles = useMemo(() => createStyle(currentTheme), [currentTheme]);
   const [listData, setListData] = useState('a');
+  const [listUp, setListUp] = useState(false);
   const ref = database().ref('/product');
   useEffect(() => {
+    lisUpdater();
+  }, []);
+
+  function lisUpdater() {
     ref.once('value').then(snapshot => {
       const data = snapshot.val();
       // console.log(data);
@@ -24,9 +46,30 @@ const UploadedProductList = () => {
         );
 
         setListData(finalData);
+        // console.log('dataaaaa');
       });
     });
-  }, []);
+  }
+  function removeItem(item) {
+    database()
+      .ref(`product/${item.authorId}/${item.uid}`)
+      .remove()
+      .then(() => {
+        lisUpdater();
+      });
+  }
+
+  if (listData == 'a') {
+    return (
+      <View
+        style={[
+          styles.mainContainer,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        <ActivityIndicator size={50} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.mainContainer}>
@@ -34,26 +77,52 @@ const UploadedProductList = () => {
         data={typeof listData == 'string' ? [] : listData}
         ItemSeparatorComponent={() => <View style={styles.cardSeprator}></View>}
         renderItem={({item}) => (
-          <View style={styles.cardStyle}>
-            <Image
-              style={styles.cardImage}
-              source={{uri: item.imageURL ?? loadingGIF}}
+          // <View style={styles.cardStyle}>
+          //   <Image
+          //     style={styles.cardImage}
+          //     source={{uri: item.imageURL ?? loadingGIF}}
+          //   />
+          //   <Text style={styles.text}>
+          //     <Text style={styles.cardDetailText}>Description: </Text>{' '}
+          //     {item.description}
+          //   </Text>
+          //   <Text style={styles.text}>
+          //     <Text style={styles.cardDetailText}>Address: </Text>
+          //     {item.address}
+          //   </Text>
+          //   <Text style={styles.text}>
+          //     <Text style={styles.cardDetailText}>Category: </Text>{' '}
+          //     {item.category}
+          //   </Text>
+          // </View>
+          <Card>
+            <CardImage
+              source={{uri: item.imageURL}}
+              title={item.product_name}
             />
-            <Text style={styles.text}>
-              <Text style={styles.cardDetailText}>Description: </Text>{' '}
-              {item.description}
-            </Text>
-            <Text style={styles.text}>
-              <Text style={styles.cardDetailText}>Address: </Text>
-              {item.address}
-            </Text>
-            <Text style={styles.text}>
-              <Text style={styles.cardDetailText}>Category: </Text>{' '}
-              {item.category}
-            </Text>
-          </View>
+            <CardContent text={`Address: ${item.address}`} />
+            <CardContent text={`Category: ${item.category}`} />
+            <CardAction separator={true} inColumn={false}>
+              {/* <CardButton onPress={() => {}} title="Push" color="blue" /> */}
+              <CardButton
+                onPress={() => {
+                  removeItem(item);
+                }}
+                title="Delete"
+                color="red"
+              />
+            </CardAction>
+          </Card>
         )}
       />
+      <TouchableOpacity
+        style={styles.FABContainer}
+        onPress={() => {
+          setListData('a');
+          lisUpdater();
+        }}>
+        <Icon name="refresh-ccw" size={40} color={currentTheme.background} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -89,6 +158,18 @@ const createStyle = (currentTheme: themeState) => {
       color: currentTheme.quaternary,
       fontWeight: '400',
       fontSize: 18,
+    },
+    FABContainer: {
+      backgroundColor: 'green',
+      position: 'absolute',
+      height: 60,
+      width: 60,
+      zIndex: 10,
+      bottom: 100,
+      right: 10,
+      borderRadius: 100,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
   return styles;

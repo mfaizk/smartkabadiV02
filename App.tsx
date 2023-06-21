@@ -112,7 +112,7 @@ const App = () => {
           options={{
             headerTitle: 'Product List',
             headerStyle: {backgroundColor: currentTheme.background},
-            headerTitleStyle: {color: currentTheme.textLightXl},
+            headerTitleStyle: {color: '#242B2E'},
           }}
         />
         <Stack.Screen
@@ -121,7 +121,7 @@ const App = () => {
           options={{
             headerTitle: 'Task List',
             headerStyle: {backgroundColor: currentTheme.background},
-            headerTitleStyle: {color: currentTheme.textLightXl},
+            headerTitleStyle: {color: '#242B2E'},
           }}
         />
         {/* Admin-Route-end-here */}

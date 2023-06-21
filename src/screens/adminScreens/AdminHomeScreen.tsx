@@ -23,6 +23,9 @@ import {FlatList} from 'react-native-gesture-handler';
 import {Alert} from 'react-native';
 import {Dimensions} from 'react-native';
 import openMap from 'react-native-open-maps';
+import Feather from 'react-native-vector-icons/Feather';
+import {productStatus} from '../../utils/constValues';
+import Snackbar from 'react-native-snackbar';
 const AdminHomeScreen = () => {
   const currentUser = useSelector((state: RootState) => state.auth);
   const currentTheme = useSelector((state: RootState) => state.theme);
@@ -39,7 +42,11 @@ const AdminHomeScreen = () => {
 
         // dispatch(initialDataEntry(Object.values(data.val())));
         Object.values(data.val()).forEach(e => {
-          dispatch(initialDataEntry(Object.values(e)));
+          dispatch(
+            initialDataEntry(
+              Object.values(e).filter(e => e.status == productStatus.ACTIVE),
+            ),
+          );
         });
 
         // console.log(DataList);
@@ -48,14 +55,85 @@ const AdminHomeScreen = () => {
     // console.log(DataList);
   }, []);
 
+  async function dataRefresher() {
+    try {
+      const data = await database().ref('/product').once('value');
+
+      // dispatch(initialDataEntry(Object.values(data.val())));
+      Object.values(data.val()).forEach(e => {
+        dispatch(
+          initialDataEntry(
+            Object.values(e).filter(e => e.status == productStatus.ACTIVE),
+          ),
+        );
+      });
+
+      // console.log(DataList);
+    } catch (error) {}
+  }
+
   if (DataList.length <= 0) {
     return (
-      <View>
-        <ActivityIndicator />
+      <View style={{height: Dimensions.get('screen').height * 0.85}}>
+        <Text>No data exist</Text>
+        <TouchableOpacity style={styles.FABlogut}>
+          <Icon
+            name="logout"
+            size={30}
+            style={styles.FABlogutIcon}
+            onPress={() => signOut(nav)}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.FABlogut, styles.FABTaskListIcon]}>
+          <Entypo
+            name="list"
+            size={30}
+            style={styles.FABlogutIcon}
+            onPress={() => nav.navigate('admin-task' as never)}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.FABlogut,
+            {bottom: 150, backgroundColor: currentTheme.primary},
+          ]}>
+          <Feather
+            name="refresh-ccw"
+            size={30}
+            style={styles.FABlogutIcon}
+            onPress={() => {
+              dataRefresher();
+            }}
+          />
+        </TouchableOpacity>
       </View>
     );
   }
   // console.log(DataList);
+
+  const taskAccept = item => {
+    database()
+      .ref(`/product/${currentUser.user?.uid}/${modalData.uid}`)
+      .update({status: productStatus.ACCEPTED})
+      .then(() => {
+        Snackbar.show({
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: currentTheme.text,
+          backgroundColor: currentTheme.background,
+          text: 'Task Accepted',
+        });
+        setIsModalOpen(!isModalOpen);
+      })
+      .catch(e => {
+        Snackbar.show({
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: currentTheme.text,
+          backgroundColor: currentTheme.background,
+          text: e.message || 'Unable to accept',
+        });
+        setIsModalOpen(!isModalOpen);
+      });
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -90,10 +168,37 @@ const AdminHomeScreen = () => {
             </Text>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
-                style={[styles.mapButton, {backgroundColor: 'green'}]}>
-                <Text style={styles.buttonText}>Accept </Text>
+                style={[
+                  styles.mapButton,
+                  styles.closeModalButton,
+                  {backgroundColor: 'green'},
+                ]}
+                onPress={() => {
+                  if (modalData.status == productStatus.ACTIVE) {
+                    taskAccept(modalData);
+                  } else {
+                    Snackbar.show({
+                      text: 'Task is already accepted',
+                      backgroundColor: 'yellow',
+                      textColor: currentTheme.background,
+                    });
+                  }
+                }}>
+                {modalData.status == productStatus.ACTIVE ? (
+                  <>
+                    <Text style={styles.buttonText}>Accept </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text
+                      style={[styles.buttonText, {backgroundColor: '#42f572'}]}>
+                      Already acccepted{' '}
+                    </Text>
+                  </>
+                )}
               </TouchableOpacity>
-              <TouchableOpacity
+
+              {/* <TouchableOpacity
                 style={styles.mapButton}
                 onPress={() => {
                   try {
@@ -111,9 +216,9 @@ const AdminHomeScreen = () => {
                   } catch (error) {
                     console.log(error.message);
                   }
-                }}>
-                <Text style={styles.buttonText}>Open Map</Text>
-              </TouchableOpacity>
+                }}> */}
+              {/* <Text style={styles.buttonText}>Open Map</Text>
+              </TouchableOpacity> */}
             </View>
             <TouchableOpacity
               style={styles.closeModalButton}
@@ -138,6 +243,20 @@ const AdminHomeScreen = () => {
           size={30}
           style={styles.FABlogutIcon}
           onPress={() => nav.navigate('admin-task' as never)}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[
+          styles.FABlogut,
+          {bottom: 150, backgroundColor: currentTheme.primary},
+        ]}>
+        <Feather
+          name="refresh-ccw"
+          size={30}
+          style={styles.FABlogutIcon}
+          onPress={() => {
+            dataRefresher();
+          }}
         />
       </TouchableOpacity>
 
