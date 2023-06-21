@@ -17,6 +17,7 @@ import {changeTheme} from './src/redux/reducer/ThemeReducer';
 import {RootState} from './src/redux/store/store';
 import AdminAcceptedTask from './src/screens/adminScreens/AdminAcceptedTask';
 import RNBootSplash from 'react-native-bootsplash';
+import ForgetPasswordScreen from './src/screens/ForgetPasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -87,6 +88,11 @@ const App = () => {
         <Stack.Screen
           name="signin"
           component={SignIn}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="forget"
+          component={ForgetPasswordScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen

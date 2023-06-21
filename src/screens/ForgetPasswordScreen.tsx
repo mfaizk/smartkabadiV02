@@ -18,23 +18,29 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store/store';
 import AnimatedButton from './component/AnimatedButton';
 import {themeState} from '../redux/reducer/ThemeReducer';
+import Snackbar from 'react-native-snackbar';
 
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 
-const SignIn = () => {
+const ForgetPasswordScreen = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isObsecure, setisObsecure] = useState(true);
   const nav = useNavigation();
   const loadingState = useSelector((state: RootState) => state.loading);
   const currentTheme = useSelector((state: RootState) => state.theme);
   const submitHandler = (): void => {
-    if (email && password) {
-      // setClick(true);
-      signInWithEmailAndPassword(email, password, nav);
-      setEmail('');
-      setPassword('');
-    }
+    // if (email && password) {
+    //   // setClick(true);
+    //   signInWithEmailAndPassword(email, password, nav);
+    //   setEmail('');
+    //   setPassword('');
+    // }
+    Snackbar.show({
+      text: 'Link sent to mail',
+      duration: Snackbar.LENGTH_SHORT,
+      textColor: 'white',
+      backgroundColor: 'green',
+    });
+    setEmail('');
   };
   const styles = useMemo(() => createStyles(currentTheme), [currentTheme]);
 
@@ -42,12 +48,12 @@ const SignIn = () => {
     <SafeAreaView>
       <ScrollView>
         <View style={styles.body}>
-          <Text style={styles.hedaing}>Sign in</Text>
+          <Text style={styles.hedaing}>Forget Password</Text>
           <View style={styles.formCard}>
             <View style={styles.formTextCardView}>
-              <Text style={styles.cardHeading}>Welcome Back</Text>
+              <Text style={styles.cardHeading}>Welcome User</Text>
               <Text style={styles.subCardHeading}>
-                Hello there, sign to continue
+                Hello there, enter email to get link
               </Text>
             </View>
             <View style={styles.formCardInputView}>
@@ -58,26 +64,11 @@ const SignIn = () => {
                 onChangeText={e => setEmail(e.trim())}
                 keyboardType="email-address"
               />
-              <Text style={styles.inputHeading}>Password</Text>
-              <View style={[styles.input, styles.passwordView]}>
-                <TextInput
-                  secureTextEntry={isObsecure}
-                  style={styles.passwordInput}
-                  value={password.trim()}
-                  onChangeText={e => setPassword(e.trim())}
-                />
-                <Icon
-                  name={isObsecure ? 'eye-off' : 'eye'}
-                  size={25}
-                  color="#111111"
-                  style={styles.inputIcon}
-                  onPress={() => setisObsecure(prev => !prev)}
-                />
-              </View>
+
               <TouchableOpacity
                 disabled={loadingState.loading}
                 onPress={() => {
-                  if (email && password) {
+                  if (email) {
                     submitHandler();
                   }
                 }}>
@@ -87,24 +78,14 @@ const SignIn = () => {
                 />
               </TouchableOpacity>
             </View>
-            <View style={styles.footerContainer}>
-              <Text style={styles.footerText}>
-                Don't have an accoun?
-                <Text
-                  style={{color: currentTheme.primary}}
-                  onPress={() => nav.navigate('signup' as never)}>
-                  Sign up
-                </Text>
+            <Text style={styles.footerText}>
+              Don't have an accoun?
+              <Text
+                style={{color: currentTheme.primary}}
+                onPress={() => nav.navigate('signin' as never)}>
+                Sign in
               </Text>
-              <Text style={styles.footerText}>
-                Forget Password
-                <Text
-                  style={{color: currentTheme.primary}}
-                  onPress={() => nav.navigate('forget' as never)}>
-                  Click here
-                </Text>
-              </Text>
-            </View>
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -138,7 +119,7 @@ const createStyles = (currentTheme: themeState) => {
       fontWeight: '800',
       alignSelf: 'flex-start',
       marginBottom: 50,
-      marginLeft: 50,
+      marginLeft: 20,
     },
     formTextCardView: {
       display: 'flex',
@@ -194,20 +175,12 @@ const createStyles = (currentTheme: themeState) => {
     footerText: {
       color: currentTheme.textLight,
       textAlign: 'center',
-      // marginTop: 'auto',
-      // marginBottom: 15,
-    },
-    footerContainer: {
-      // backgroundColor: currentTheme.tertiary,
-      height: 100,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 10,
-      alignSelf: 'stretch',
       marginTop: 'auto',
+      marginBottom: 15,
     },
   });
   return styles;
 };
-export default SignIn;
+export default ForgetPasswordScreen;
+
+// ForgetPasswordScreen
