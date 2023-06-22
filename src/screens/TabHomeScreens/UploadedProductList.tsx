@@ -122,6 +122,7 @@ const UploadedProductList = () => {
             />
             <CardContent text={`Address: ${item.address}`} />
             <CardContent text={`Category: ${item.category}`} />
+            <CardContent text={`Status: ${item.status}`} />
             <CardAction separator={true} inColumn={false}>
               {/* <CardButton onPress={() => {}} title="Push" color="blue" /> */}
               <CardButton

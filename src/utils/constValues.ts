@@ -9,6 +9,7 @@ export const productStatus = {
   ACTIVE: 'active',
   DISABLE: 'disable',
   ACCEPTED: 'accepted',
+  COMPLETED: 'completed',
 };
 
 export const productCategory = ['CLOTH', 'METAL', 'ORGAINIC'];

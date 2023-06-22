@@ -20,7 +20,6 @@ const AdminAcceptedTask = () => {
   const [DataList, setDataList] = useState('a');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState({});
-
   useEffect(() => {
     (async () => {
       try {
@@ -38,6 +37,48 @@ const AdminAcceptedTask = () => {
     })();
     // dataRefresher();
   }, []);
+
+  const dataRefresher = async () => {
+    try {
+      const data = await database().ref('/product').once('value');
+
+      // dispatch(initialDataEntry(Object.values(data.val())));
+      Object.values(data.val()).forEach(e => {
+        setDataList(
+          Object.values(e).filter(e => e.status == productStatus.ACCEPTED),
+        );
+      });
+
+      // console.log(DataList);
+    } catch (error) {}
+  };
+
+  function markCompleted() {
+    // console.log();
+
+    database()
+      .ref(`/product/${modalData.authorId}/${modalData.uid}`)
+      .update({status: productStatus.COMPLETED})
+      .then(() => {
+        Snackbar.show({
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: 'white',
+          backgroundColor: 'green',
+          text: 'Task Accepted',
+        });
+        dataRefresher();
+        setIsModalOpen(!isModalOpen);
+      })
+      .catch(e => {
+        Snackbar.show({
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: currentTheme.text,
+          backgroundColor: currentTheme.background,
+          text: e.message || 'Unable to accept',
+        });
+        setIsModalOpen(!isModalOpen);
+      });
+  }
 
   // async function dataRefresher() {
   //   try {
@@ -138,6 +179,11 @@ const AdminAcceptedTask = () => {
               </TouchableOpacity> */}
               </View>
               <TouchableOpacity
+                style={[styles.closeModalButton, {backgroundColor: 'blue'}]}
+                onPress={() => markCompleted()}>
+                <Text style={styles.buttonText}>Completed</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={styles.closeModalButton}
                 onPress={() => setIsModalOpen(!isModalOpen)}>
                 <Text style={styles.buttonText}>Close</Text>
@@ -181,8 +227,13 @@ const AdminAcceptedTask = () => {
   console.log(DataList);
 
   return (
-    <View>
-      <Text>Hello</Text>
+    <View
+      style={{
+        height: Dimensions.get('screen').height,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Text style={{fontSize: 20, color: '#111'}}>No Task Remaining</Text>
     </View>
   );
 };
@@ -239,12 +290,14 @@ const styles = StyleSheet.create({
 
   // Modal-style-start-here
   modalContainer: {
-    height: Dimensions.get('window').height * 0.75,
+    height: Dimensions.get('window').height * 0.9,
+    width: Dimensions.get('window').width * 0.95,
     backgroundColor: '#CAD5E2',
-    position: 'relative',
-    top: Dimensions.get('window').height * 0.2,
+    position: 'absolute',
+    bottom: 0,
     padding: 10,
-    margin: 10,
+    // margin: 10,
+    alignSelf: 'center',
     borderRadius: 10,
   },
   modalImage: {

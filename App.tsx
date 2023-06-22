@@ -130,6 +130,15 @@ const App = () => {
             headerTitleStyle: {color: '#242B2E'},
           }}
         />
+        <Stack.Screen
+          name="admin-comp-task"
+          component={AdminAcceptedTask}
+          options={{
+            headerTitle: 'Completed Task List',
+            headerStyle: {backgroundColor: currentTheme.background},
+            headerTitleStyle: {color: '#242B2E'},
+          }}
+        />
         {/* Admin-Route-end-here */}
       </Stack.Navigator>
     </NavigationContainer>

@@ -122,7 +122,7 @@ const SignUp = () => {
                 }}>
                 <AnimatedButton
                   currentTheme={currentTheme}
-                  buttonText={'Signin'}
+                  buttonText={'SignUp'}
                 />
               </TouchableOpacity>
             </View>
