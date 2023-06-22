@@ -122,6 +122,7 @@ const AdminHomeScreen = () => {
           backgroundColor: currentTheme.background,
           text: 'Task Accepted',
         });
+        dataRefresher();
         setIsModalOpen(!isModalOpen);
       })
       .catch(e => {
@@ -312,7 +313,8 @@ const createStyle = (currentTheme: themeState) => {
     },
     card: {
       display: 'flex',
-      backgroundColor: currentTheme.secondary,
+      backgroundColor: '#5A20CB',
+      opacity: 0.7,
       width: '95%',
       padding: 10,
       flexDirection: 'row',

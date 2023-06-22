@@ -39,34 +39,54 @@ const UploadedProductList = () => {
     ref.once('value').then(snapshot => {
       const data = snapshot.val();
       // console.log(data);
+      if (!data) {
+        setListData('a');
+      } else {
+        Object.values(data).forEach(e => {
+          const finalData = Object.values(e).filter(
+            v => v.authorId === currentUser.user?.uid,
+          );
 
-      Object.values(data).forEach(e => {
-        const finalData = Object.values(e).filter(
-          v => v.authorId === currentUser.user?.uid,
-        );
-
-        setListData(finalData);
-        // console.log('dataaaaa');
-      });
+          setListData(finalData);
+          // console.log('dataaaaa');
+        });
+      }
     });
   }
-  function removeItem(item) {
-    database()
-      .ref(`product/${item.authorId}/${item.uid}`)
-      .remove()
-      .then(() => {
-        lisUpdater();
-      });
+  async function removeItem(item) {
+    await database().ref(`product/${item.authorId}/${item.uid}`).remove();
+    lisUpdater();
   }
 
-  if (listData == 'a') {
+  if (listData == 'a' || listData == []) {
     return (
       <View
         style={[
           styles.mainContainer,
           {justifyContent: 'center', alignItems: 'center'},
         ]}>
-        <ActivityIndicator size={50} />
+        <Text style={{fontSize: 15, color: currentTheme.quaternary}}>
+          No Product Added
+        </Text>
+        <TouchableOpacity
+          style={styles.FABContainer}
+          onPress={() => {
+            setListData('loading');
+            lisUpdater();
+          }}>
+          <Icon name="refresh-ccw" size={40} color={currentTheme.background} />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  if (listData == 'loading') {
+    return (
+      <View
+        style={[
+          styles.mainContainer,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        <ActivityIndicator size={25} />
       </View>
     );
   }

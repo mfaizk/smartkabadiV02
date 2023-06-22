@@ -19,6 +19,7 @@ import {RootState} from '../redux/store/store';
 import AnimatedButton from './component/AnimatedButton';
 import {themeState} from '../redux/reducer/ThemeReducer';
 import Snackbar from 'react-native-snackbar';
+import auth from '@react-native-firebase/auth';
 
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 
@@ -27,20 +28,19 @@ const ForgetPasswordScreen = () => {
   const nav = useNavigation();
   const loadingState = useSelector((state: RootState) => state.loading);
   const currentTheme = useSelector((state: RootState) => state.theme);
+
   const submitHandler = (): void => {
-    // if (email && password) {
-    //   // setClick(true);
-    //   signInWithEmailAndPassword(email, password, nav);
-    //   setEmail('');
-    //   setPassword('');
-    // }
-    Snackbar.show({
-      text: 'Link sent to mail',
-      duration: Snackbar.LENGTH_SHORT,
-      textColor: 'white',
-      backgroundColor: 'green',
-    });
-    setEmail('');
+    auth()
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        Snackbar.show({
+          text: 'Link sent to mail',
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: 'white',
+          backgroundColor: 'green',
+        });
+        setEmail('');
+      });
   };
   const styles = useMemo(() => createStyles(currentTheme), [currentTheme]);
 
