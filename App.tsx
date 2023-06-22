@@ -31,7 +31,7 @@ const App = () => {
     (async function initialRun() {
       // theme-logic-start-here
       try {
-        await RNBootSplash.hide({fade: true, duration: 500});
+        await RNBootSplash.hide({fade: true, duration: 3000});
         if (await AsyncStorage.getItem(themeStringKey)) {
           dispatch(
             changeTheme({

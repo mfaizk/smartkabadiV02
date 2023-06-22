@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Dimensions,
   StatusBar,
+  Linking,
   // ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
@@ -88,9 +89,13 @@ const AdminSignInScreen = () => {
             </View>
             <Text style={styles.footerText}>
               Don't have an account?
-              <Text style={{color: currentTheme.primary}} onPress={() => {}}>
+              <Text
+                style={{color: currentTheme.primary}}
+                onPress={() => {
+                  Linking.openURL('https://forms.gle/tKvtWwsRhZtLLr6r8');
+                }}>
                 {' '}
-                Request account
+                Request Access
               </Text>
             </Text>
           </View>
